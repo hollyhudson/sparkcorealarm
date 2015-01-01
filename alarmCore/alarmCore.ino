@@ -9,7 +9,7 @@
 
 
 // This #include statement was automatically added by the Spark IDE.
-#include "SparkCoreLibraries/SparkTime.h"
+#include "SparkTime.h"
 
 UDP UDPClient;
 SparkTime rtc;

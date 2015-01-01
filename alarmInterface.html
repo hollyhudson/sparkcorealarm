@@ -11,16 +11,14 @@
 
 	<script type="text/javascript">
 
-	var deviceID = "53ff6d066667574842262467";
-	var accessToken = "38a9c2c4196db58a8a5384ecd762d7596d048b88";
 	var funcName = "led";
 	var getFunc = "time";
 
-	requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/"+ funcName;
+	buttonURL = "https://api.spark.io/v1/devices/" + deviceID + "/"+ funcName;
 
 	function toggleL1(objButton) {
 	
-		$.post(requestURL, {
+		$.post(buttonURL, {
 			access_token: accessToken,
 			params: "l1,LOW",
 		});
@@ -28,18 +26,22 @@
 
 	function toggleL2(objButton) {
 	
-		$.post(requestURL, {
+		$.post(buttonURL, {
 			access_token: accessToken,
 			params: "l2,LOW",
 		});
 	}
 
-	//window.setInterval(function() {
-		//requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/" + getFunc + "/?access_token=" + accessToken;
-		//$.getJSON(requestURL, function(json){
-			//document.getElementById("time".innerHTML = json.result;
-		//});
-	//}, 1000);
+	window.setInterval(function() {
+		timeURL = "https://api.spark.io/v1/devices/" + deviceID + "/" + getFunc + "/?access_token=" + accessToken;
+		$.getJSON(timeURL, function(json){
+ 			//var time_as_int = parseInt(json.result) & 0xFFFFFFF;
+ 			//var time_as_int = parseInt(json.result);
+ 			var time_as_int = json.result;
+			document.getElementById("time").innerHTML = time_as_int;
+
+		});
+	}, 1000);
 	</script>
 </body>
 </html>

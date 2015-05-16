@@ -1,83 +1,77 @@
-/*************************************
- * Sunrise Alarm Clock for Spark Core
- * by Holly Hudson
- * Thanks to the following for help
- * and/or their posted example code:
- * Trammell Hudson
- * Peter Chaivre
-**************************************/
+/** \file
+ * Demo 2:
+ * Expose a function that allows the user to turn the LED on or off
+ * and a variable with the current value.
+ */
 
+static const int LED_1 = D7; // onboard LED
+static const int LED_2 = D0; // external LED
+static const int LED_3 = D1; // external LED
+static int led_state1 = 0;
+static int led_state2 = 0;
+static int led_state3 = 0;
 
-// This #include statement was automatically added by the Spark IDE.
-#include "SparkTime.h"
-
-UDP UDPClient;
-SparkTime rtc;
-
-unsigned long currentTime;
-char time_str[64];
-int ledY = D0;
-int ledX = D1;
-int pinStates[2] = {0,0};
-
-void setup() {
-    Spark.function("led", ledControl);
-    Spark.variable("time", &time_str, STRING);
-    Spark.variable("states", &pinStates, INT);
-    pinMode(ledX, OUTPUT);
-    pinMode(ledY, OUTPUT);
-    
-    // initialize both LEDs to off
-    digitalWrite(ledX, LOW);
-    digitalWrite(ledY, LOW);
-    // let's track the state of the pins
-    // so that we can use one button to toggle them
-    //pinStates = {0,0};
-    
-    rtc.begin(&UDPClient, "north-america.pool.ntp.org");
-    rtc.setTimeZone(-5); // gmt offset
-}
-
-void loop() {
-    currentTime = rtc.now();
-    String now = rtc.ISODateString(currentTime);
-    now.toCharArray(time_str, sizeof(time_str));
-    
-    // Ensures a timestamp has been returned
-    // rather than the year. (There's a bug?)
-    if (currentTime < 9999) return;
-}
-
-int ledControl(String command)
+// set_led() both sets the LED, and returns what it has been set to.
+// format of command is led_num and ON or OFF.  Examples:  1ON  2OFF 3OFF  
+static int
+set_led(
+	String command
+)
 {
-    int state = 0;
-    
-    // find out the pin number and convert ascii to integer
-    int pinNumber = (command.charAt(1) - '0') - 1;
-    
-    // sanity check to see if pin numbers are within range
-    if (pinNumber == 0)
-      pinNumber = ledX;
-    else
-    if (pinNumber == 1)
-      pinNumber = ledY;
-    else
-      return -1;
-    
-    // find out the state of the LED
-    // substring(start, end) where start and end refer to the start
-    // and end of the part of the string you want to examine
-    // Full command is l1,HIGH or l2,LOW
-    if (command.substring(3,7) == "HIGH") state = 1;
-    else if (command.substring(3,6) == "LOW") state = 0;
-    else return -1;
-    
-    // Write to the appropriate pin
-    digitalWrite(pinNumber, state);
-    // record new state for pin
-    // pinStates[pinNumer] = state;
-    return 1;
-    
+	int led_name;
+	
+	if (command.startsWith("1")) // which LED
+	{
+		led_name = LED_1; 
+	} else if (command.startsWith("2"))
+	{
+		led_name = LED_2; 
+	} else if (command.startsWith("3"))
+	{
+		led_name = LED_3; 
+	}
+	
+	if (command.endsWith("F"))  // OFF
+	{
+		// digitalWrite() and digitalRead() are defined in the 
+		// SparkCore docs on their site
+		digitalWrite(led_name, 0);
+		return 0;
+	} else
+	if (command.endsWith("N")) // ON
+	{
+		digitalWrite(led_name, 1);
+		return 1;
+	} else {
+		return -1;
+	}
 }
 
 
+/*
+ * Variables and functions can be "exposed" through the Spark Cloud
+ * so that you can call them with GET:
+ * 	GET /v1/devices/{DEVICE_ID}/{VARIABLE}
+ * and POST:
+ * 	POST device/{FUNCTION}
+ */
+void setup()
+{
+	pinMode(LED_1, OUTPUT);
+	pinMode(LED_2, OUTPUT);
+	pinMode(LED_3, OUTPUT);
+	Spark.variable("led_state1", &led_state1, INT);
+	Spark.variable("led_state2", &led_state2, INT);
+	Spark.variable("led_state3", &led_state3, INT);
+	Spark.function("set_led", set_led);
+}
+
+
+void loop()
+{
+	// each time through the loop, get the current
+	// state of the LED (on or off)
+	led_state1 = digitalRead(LED_1);
+	led_state2 = digitalRead(LED_2);
+	led_state3 = digitalRead(LED_3);
+}

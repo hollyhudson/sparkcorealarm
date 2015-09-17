@@ -1,11 +1,14 @@
+<!DOCTYPE html>
+<!-- 
+		THIS IS THE FILE YOU SHOULD BE USING.
+		MERGE CONTENTS OF alarmInterface.html INTO THIS FILE
+-->
 <html>
 <head>
-<title>Spark Time Demo</title>
-<script
-	type="text/javascript"
-	src="https://cdn.jsdelivr.net/sparkjs/0.2.6/spark.min.js"
->
-</script>
+	<title>Spark Core Alarm Clock</title>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/sparkjs/0.2.6/spark.min.js"> </script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="keys_dont_checkin.js"></script>
 </head>
 <body>
 
@@ -18,15 +21,15 @@
 	<div id="devices"></div>
 	</form>
 
-	Onboard LED: <span id="led_state1" >???</span><br/>
+	Onboard LED: <span id="led_state_onboard" >???</span><br/>
 	<button onclick="javascript:set_led('1ON')">On</button>
 	<button onclick="javascript:set_led('1OFF')">Off</button>
 	<p>
-	LED A: <span id="led_state2" >???</span><br/>
+	LED A: <span id="led_state_0" >???</span><br/>
 	<button onclick="javascript:set_led('2ON')">On</button>
 	<button onclick="javascript:set_led('2OFF')">Off</button>
 	<p>
-	LED B: <span id="led_state3" >???</span><br/>
+	LED B: <span id="led_state_1" >???</span><br/>
 	<button onclick="javascript:set_led('3ON')">On</button>
 	<button onclick="javascript:set_led('3OFF')">Off</button>
 
@@ -104,11 +107,11 @@ function handle_devices(devices_arg)
 function update_led_state(which_led, val)
 {
 	if (which_led == "1"){
-		var html = document.getElementById("led_state1");
+		var html = document.getElementById("led_state_onboad");
 	} else if (which_led == "2"){
-		var html = document.getElementById("led_state2");
+		var html = document.getElementById("led_state_0");
 	} else if (which_led == "3"){
-		var html = document.getElementById("led_state3");
+		var html = document.getElementById("led_state_1");
 	}
 	if (val == 0)
 		html.innerHTML = "OFF";
@@ -145,17 +148,17 @@ setInterval(function() {
 	if (!device)
 		return;
 
-	device.getVariable('led_state1', function(err,data) {
+	device.getVariable('led_state_onboard', function(err,data) {
 		if (err) return alert(err);
 		which_led = 1;
 		update_led_state(which_led, data.result);
 	})
-	device.getVariable('led_state2', function(err,data) {
+	device.getVariable('led_state_0', function(err,data) {
 		if (err) return alert(err);
 		which_led = 2;
 		update_led_state(which_led, data.result);
 	})
-	device.getVariable('led_state3', function(err,data) {
+	device.getVariable('led_state_1', function(err,data) {
 		if (err) return alert(err);
 		which_led = 3;
 		update_led_state(which_led, data.result);

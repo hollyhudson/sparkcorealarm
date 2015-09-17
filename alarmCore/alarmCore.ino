@@ -4,12 +4,12 @@
  * and a variable with the current value.
  */
 
-static const int LED_1 = D7; // onboard LED
-static const int LED_2 = D0; // external LED
-static const int LED_3 = D1; // external LED
-static int led_state1 = 0;
-static int led_state2 = 0;
-static int led_state3 = 0;
+static const int LED_onboard = D7; // onboard LED
+static const int LED_0 = D0; // external LED
+static const int LED_1 = D1; // external LED
+static int led_state_onboard = 0;
+static int led_state_0 = 0;
+static int led_state_1 = 0;
 
 // set_led() both sets the LED, and returns what it has been set to.
 // format of command is led_num and ON or OFF.  Examples:  1ON  2OFF 3OFF  
@@ -22,13 +22,13 @@ set_led(
 	
 	if (command.startsWith("1")) // which LED
 	{
-		led_name = LED_1; 
+		led_name = LED_onboard; 
 	} else if (command.startsWith("2"))
 	{
-		led_name = LED_2; 
+		led_name = LED_0; 
 	} else if (command.startsWith("3"))
 	{
-		led_name = LED_3; 
+		led_name = LED_1; 
 	}
 	
 	if (command.endsWith("F"))  // OFF
@@ -57,12 +57,12 @@ set_led(
  */
 void setup()
 {
+	pinMode(LED_onboard, OUTPUT);
+	pinMode(LED_0, OUTPUT);
 	pinMode(LED_1, OUTPUT);
-	pinMode(LED_2, OUTPUT);
-	pinMode(LED_3, OUTPUT);
-	Spark.variable("led_state1", &led_state1, INT);
-	Spark.variable("led_state2", &led_state2, INT);
-	Spark.variable("led_state3", &led_state3, INT);
+	Spark.variable("led_state_onboard", &led_state_onboard, INT);
+	Spark.variable("led_state_0", &led_state_0, INT);
+	Spark.variable("led_state_1", &led_state_1, INT);
 	Spark.function("set_led", set_led);
 }
 
@@ -71,7 +71,7 @@ void loop()
 {
 	// each time through the loop, get the current
 	// state of the LED (on or off)
-	led_state1 = digitalRead(LED_1);
-	led_state2 = digitalRead(LED_2);
-	led_state3 = digitalRead(LED_3);
+	led_state_onboard = digitalRead(LED_onboard);
+	led_state_0 = digitalRead(LED_0);
+	led_state_1 = digitalRead(LED_1);
 }

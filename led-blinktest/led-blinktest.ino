@@ -1,5 +1,4 @@
 /** \file
- * Demo 2:
  * Expose a function that allows the user to turn the LED on or off
  * and a variable with the current value.
  */

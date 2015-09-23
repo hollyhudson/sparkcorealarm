@@ -15,7 +15,7 @@
 
 static const int LED = D7; // the onboard blue LED
 static char time_str[32];
-//static String time_str;
+static int epoch_time;
 
 #define ONE_DAY_MILLIS (24*60*60*1000)
 
@@ -23,6 +23,7 @@ void setup()
 {
 	pinMode(LED, OUTPUT);
 	Spark.variable("time", &time_str, STRING);
+	Spark.variable("epoch_time", &epoch_time, INT);
 }
 
 void loop()
@@ -49,6 +50,7 @@ void loop()
 		// the exposed variable "time" should now contain the current time:
 		//strncpy(time_str, "Hello", sizeof(time_str));
 		strncpy(time_str, Time.timeStr(), sizeof(time_str));
+		epoch_time = Time.now();
 	}
 }
 	

@@ -84,5 +84,17 @@ var interval = setInterval(function() {
 		console.log(data);
 		document.getElementById("time").innerHTML = data.result;
 	});	
+	device.getVariable('epoch_time', function(err,data) {
+		if (err) return alert(err);
+
+		// the element labeled "time", make the html inside that tag set
+		// contain the result of querying the time variable.
+		document.getElementById("epoch").innerHTML = data.result;
+		var epoch_time = new Date(data.result*1000); // Date wants millisec
+		document.getElementById("year").innerHTML = epoch_time.getFullYear();
+		document.getElementById("clock_time").innerHTML = epoch_time.getTime();
+	});	
 }, 1000);
+
+
 

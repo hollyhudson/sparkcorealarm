@@ -91,7 +91,78 @@ var interval = setInterval(function() {
 		// contain the result of querying the time variable.
 		document.getElementById("epoch").innerHTML = data.result;
 		var epoch_time = new Date(data.result*1000); // Date wants millisec
+		
+		var day = "unknown";
+		switch (epoch_time.getDay()) {
+			case 0:
+				day = "zondag";
+				break;
+			case 1:
+				day = "maandag";
+				break;
+			case 2:
+				day = "dinsdag";
+				break;
+			case 3:
+				day = "woensdag";
+				break;
+			case 4:
+				day = "donderdag";
+				break;
+			case 5:
+				day = "vrijdag";
+				break;
+			case 6:
+				day = "zaterdag";
+				break;
+		}
+
+		var month = "unknown";
+		switch (epoch_time.getMonth()) {
+			case 0:
+				month = "januari";
+				break;
+			case 1:
+				month = "februari";
+				break;
+			case 2:
+				month = "mars";
+				break;
+			case 3:
+				month = "april";
+				break;
+			case 4:
+				month = "mei";
+				break;
+			case 5:
+				month = "juni";
+				break;
+			case 6:
+				month = "juli";
+				break;
+			case 7:
+				month = "augustus";
+				break;
+			case 8:
+				month = "september";
+				break;
+			case 9:
+				month = "oktober";
+				break;
+			case 10:
+				month = "november";
+				break;
+			case 11:
+				month = "december";
+				break;
+		}
+
+		document.getElementById("day").innerHTML = day; 
+		document.getElementById("month").innerHTML = month; 
+		document.getElementById("date").innerHTML = epoch_time.getDate();
 		document.getElementById("year").innerHTML = epoch_time.getFullYear();
+		document.getElementById("hours").innerHTML = ("0" + epoch_time.getHours()).slice(-2); // add leading 0
+		document.getElementById("minutes").innerHTML = ("0" + epoch_time.getMinutes()).slice(-2); // add leading 0
 		document.getElementById("clock_time").innerHTML = epoch_time.getTime();
 	});	
 }, 1000);

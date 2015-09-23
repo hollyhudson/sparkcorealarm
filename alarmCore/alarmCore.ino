@@ -16,6 +16,7 @@
 static const int LED = D7; // the onboard blue LED
 static char time_str[32];
 static int epoch_time;
+static int alarm_time;
 
 #define ONE_DAY_MILLIS (24*60*60*1000)
 
@@ -34,6 +35,7 @@ void loop()
 	// the value overflows (resets to zero) after 50 days.
 	const uint32_t now_millis = millis();
 
+	// If you haven't synced (the time) in a day, do it now.
 	if (now_millis - last_sync > ONE_DAY_MILLIS)
 	{
 		Spark.syncTime();

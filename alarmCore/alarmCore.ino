@@ -15,16 +15,31 @@
 
 static const int LED = D7; // the onboard blue LED
 static char time_str[32];
-static int epoch_time;
+static int current_epoch_time;
 static int alarm_time;
+static boolean alarm_is_set = false;
+static const int LED_1 = D0;
+static const int LED_2 = D1;
 
 #define ONE_DAY_MILLIS (24*60*60*1000)
+
+int set_alarm( String incoming_time ) 
+{
+	Serial.print("in set_alarm");
+	alarm_time = incoming_time.toInt();		
+	alarm_is_set = true;
+	return 1;
+}
 
 void setup()
 {
 	pinMode(LED, OUTPUT);
 	Spark.variable("time", &time_str, STRING);
-	Spark.variable("epoch_time", &epoch_time, INT);
+	Spark.variable("epoch_time", &current_epoch_time, INT);
+	Spark.function("set_alarm", set_alarm);
+	pinMode(LED_1, OUTPUT);
+	pinMode(LED_2, OUTPUT);
+	Serial.begin(9600);
 }
 
 void loop()
@@ -52,7 +67,19 @@ void loop()
 		// the exposed variable "time" should now contain the current time:
 		//strncpy(time_str, "Hello", sizeof(time_str));
 		strncpy(time_str, Time.timeStr(), sizeof(time_str));
-		epoch_time = Time.now();
+		current_epoch_time = Time.now();
+		int difference = alarm_time - current_epoch_time;
+		Serial.print("difference: ");
+		Serial.print(difference);
+		Serial.print("\r\n");
+	}
+
+	// check to see if the alarm should go off
+	if (current_epoch_time > alarm_time && alarm_is_set) 
+	{
+		Serial.print("suceeded test if we are past alarm time");
+		digitalWrite(LED_1, 1);			
+		alarm_is_set = false;	
 	}
 }
 	

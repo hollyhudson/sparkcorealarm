@@ -58,7 +58,24 @@ function handle_devices(devices_arg)
 		div.appendChild(sel);
 		div.appendChild(lab);
 	}
+
+	// new Date(year, month, day, hours, minutes, seconds, milliseconds)
+	var next_alarm = new Date(2015, 8, 24, 22, 18, 0, 0);
+	next_alarm = next_alarm.getTime()/1000; //convert to epoch time
+
+	device.callFunction('set_alarm', next_alarm, function(err, data) {
+		if (err) {
+			console.log('An error occurred:', err);
+		} else {
+			console.log('Function set_alarm called succesfully:', data);
+		}
+	});
 }
+
+/*
+ * Test setting the alarm
+ */
+
 
 /* The setInterval() method calls a function or evaluates an expression
  * at specified intervals (in milliseconds).
@@ -66,7 +83,6 @@ function handle_devices(devices_arg)
  * The setInterval() method will continue calling the function until
  * clearInterval() is called, or the window is closed.
  */
-
 /*
  * Read the current time every 1 second, 
  * but only if there is a currently selected device.
@@ -164,6 +180,7 @@ var interval = setInterval(function() {
 		document.getElementById("hours").innerHTML = ("0" + epoch_time.getHours()).slice(-2); // add leading 0
 		document.getElementById("minutes").innerHTML = ("0" + epoch_time.getMinutes()).slice(-2); // add leading 0
 		document.getElementById("clock_time").innerHTML = epoch_time.getTime();
+	
 	});	
 }, 1000);
 

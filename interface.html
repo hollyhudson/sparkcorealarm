@@ -36,6 +36,13 @@
 	<span id="hours"></span>:<span id="minutes"></span>
 </div>
 
+<form>
+	Wake up at: <input type="time" name="time_to_set_alarm" id="timebox" value="22:40">
+	<button type="button" onclick="set_alarm()">SET!</button>
+	<button type="button" onclick="refresh_textbox()">Refresh</button>
+</form>
+	The alarm will go off at: <span id="time_to_set"></span>
+
 <p>Debugging:</p>
 <div id="time"></div>
 <div id="epoch"></div>

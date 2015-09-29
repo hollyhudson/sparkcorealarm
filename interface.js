@@ -4,6 +4,8 @@
  */
 var device;
 
+var time_to_set; // time the user wants the alarm set for, string from html
+
 /*
  * Log us in and get a list of devices (spark cores).
  *
@@ -59,6 +61,9 @@ function handle_devices(devices_arg)
 		div.appendChild(lab);
 	}
 
+	/* SETUP before going into interval loop */
+	
+ 	 
 	// new Date(year, month, day, hours, minutes, seconds, milliseconds)
 	var next_alarm = new Date(2015, 8, 24, 22, 18, 0, 0);
 	next_alarm = next_alarm.getTime()/1000; //convert to epoch time
@@ -73,9 +78,24 @@ function handle_devices(devices_arg)
 }
 
 /*
- * Test setting the alarm
+ * Set the alarm.
  */
+function set_alarm()
+{
+	time_to_set = document.getElementById("timebox").value;
+	document.getElementById("time_to_set").innerHTML = time_to_set;
 
+}
+
+
+/*
+ * Refresh the time in the textbox to 8 hrs from current time
+ * to aid in setting the alarm.
+ */
+function refresh_textbox()
+{
+	document.getElementById("timebox").value = "22:40";
+}
 
 /* The setInterval() method calls a function or evaluates an expression
  * at specified intervals (in milliseconds).

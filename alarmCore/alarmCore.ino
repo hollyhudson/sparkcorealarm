@@ -34,9 +34,9 @@ int set_alarm( String incoming_time )
 void setup()
 {
 	pinMode(LED, OUTPUT);
-	Spark.variable("time", &time_str, STRING);
-	Spark.variable("epoch_time", &current_epoch_time, INT);
-	Spark.function("set_alarm", set_alarm);
+	Particle.variable("time", time_str, STRING);
+	Particle.variable("epoch_time", &current_epoch_time, INT);
+	Particle.function("set_alarm", set_alarm);
 	pinMode(LED_1, OUTPUT);
 	pinMode(LED_2, OUTPUT);
 	Serial.begin(9600);
@@ -53,7 +53,7 @@ void loop()
 	// If you haven't synced (the time) in a day, do it now.
 	if (now_millis - last_sync > ONE_DAY_MILLIS)
 	{
-		Spark.syncTime();
+		Particle.syncTime();
 		last_sync = millis();
 		return;
 	}
@@ -68,10 +68,10 @@ void loop()
 		//strncpy(time_str, "Hello", sizeof(time_str));
 		strncpy(time_str, Time.timeStr(), sizeof(time_str));
 		current_epoch_time = Time.now();
-		int difference = alarm_time - current_epoch_time;
-		Serial.print("difference: ");
-		Serial.print(difference);
-		Serial.print("\r\n");
+		//int difference = alarm_time - current_epoch_time;
+		//Serial.print("difference: ");
+		//Serial.print(difference);
+		//Serial.print("\r\n");
 	}
 
 	// check to see if the alarm should go off

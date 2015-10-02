@@ -4,7 +4,8 @@
  */
 var device;
 
-var time_to_set; // time the user wants the alarm set for, string from html
+// time the user wants the alarm set for, string from html, array [hrs,min]
+var time_to_set; 
 
 /*
  * Log us in and get a list of devices (spark cores).
@@ -64,17 +65,6 @@ function handle_devices(devices_arg)
 	/* SETUP before going into interval loop */
 	
  	 
-	// new Date(year, month, day, hours, minutes, seconds, milliseconds)
-	var next_alarm = new Date(2015, 8, 24, 22, 18, 0, 0);
-	next_alarm = next_alarm.getTime()/1000; //convert to epoch time
-
-	device.callFunction('set_alarm', next_alarm, function(err, data) {
-		if (err) {
-			console.log('An error occurred:', err);
-		} else {
-			console.log('Function set_alarm called succesfully:', data);
-		}
-	});
 }
 
 /*
@@ -82,9 +72,30 @@ function handle_devices(devices_arg)
  */
 function set_alarm()
 {
-	time_to_set = document.getElementById("timebox").value;
-	document.getElementById("time_to_set").innerHTML = time_to_set;
+	time_to_set = (document.getElementById("timebox").value).split(":");
 
+	// new Date(year, month, day, hours, minutes, seconds, milliseconds)
+	device.getVariable('epoch_time', function(err,data) {
+		if (err) return alert(err);
+
+		document.getElementById("epoch").innerHTML = data.result;
+		var current_time = new Date(data.result*1000); // Date wants millisec
+
+		console.log("time_to_set " + time_to_set);
+		console.log("current_time(year) " + current_time.getFullYear());
+		var next_alarm = new Date(current_time.getFullYear(), current_time.getMonth(), current_time.getDate(), time_to_set[0], time_to_set[1], 0, 0);
+
+		next_alarm = next_alarm.getTime()/1000; //convert to epoch time
+
+		device.callFunction('set_alarm', next_alarm, function(err, data) {
+			if (err) {
+				console.log('An error occurred:', err);
+			} else {
+				console.log('Function set_alarm called succesfully:', data);
+				document.getElementById("next_alarm").innerHTML = next_alarm;
+			}
+		});
+	});
 }
 
 

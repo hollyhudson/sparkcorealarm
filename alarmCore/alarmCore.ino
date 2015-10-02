@@ -15,8 +15,9 @@
 
 static const int LED = D7; // the onboard blue LED
 static char time_str[32];
+static char placeholder_variable[32];
 static int current_epoch_time;
-static int alarm_time;
+static int alarm_time = 0;
 static boolean alarm_is_set = false;
 static const int LED_1 = D0;
 static const int LED_2 = D1;
@@ -31,12 +32,22 @@ int set_alarm( String incoming_time )
 	return 1;
 }
 
+int cancel_alarm(String placeholder_variable)
+{
+	alarm_time = 0;
+	digitalWrite(LED_1, 0);			
+	alarm_is_set = false;
+	return 1;
+}
+
 void setup()
 {
 	pinMode(LED, OUTPUT);
 	Particle.variable("time", time_str, STRING);
 	Particle.variable("epoch_time", &current_epoch_time, INT);
+	Particle.variable("next_alarm", &alarm_time, INT);
 	Particle.function("set_alarm", set_alarm);
+	Particle.function("cancel_alarm", cancel_alarm);
 	pinMode(LED_1, OUTPUT);
 	pinMode(LED_2, OUTPUT);
 	Serial.begin(9600);

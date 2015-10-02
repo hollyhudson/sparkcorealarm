@@ -29,9 +29,7 @@
 <script type="text/javascript" src="interface.js"></script>
 
 <div id="day"></div>
-<div id="date"></div>
-<div id="month"></div>
-<div id="year"></div>
+<span id="date"></span> <span id="month"></span> <span id="year"></span>
 <div>
 	<span id="hours"></span>:<span id="minutes"></span>
 </div>
@@ -39,7 +37,8 @@
 <form>
 	Wake up at: <input type="time" name="time_to_set_alarm" id="timebox" value="22:40">
 	<button type="button" onclick="set_alarm()">SET!</button>
-	<button type="button" onclick="refresh_textbox()">Refresh</button>
+	<button type="button" onclick="refresh_textbox()">refresh</button>
+	<button type="button" onclick="cancel_alarm()">cancel alarm</button>
 </form>
 	The alarm will go off at: <span id="next_alarm"></span>
 

@@ -92,12 +92,28 @@ function set_alarm()
 				console.log('An error occurred:', err);
 			} else {
 				console.log('Function set_alarm called succesfully:', data);
-				document.getElementById("next_alarm").innerHTML = next_alarm;
+				//document.getElementById("next_alarm").innerHTML = next_alarm;
 			}
 		});
 	});
 }
 
+/*
+ * Cancel the Alarm and turn off any lights/beeping/etc
+ */
+function cancel_alarm()
+{
+	device.callFunction('cancel_alarm', function(err, data){
+		if (err) {
+			console.log('An error occurred:', err);
+		} else {
+			console.log('Function set_alarm called succesfully:', data);
+			document.getElementById("next_alarm").innerHTML = device.getVariable('alarm_time', function(err, data){
+				if (err) return alert(err);
+			});
+		}
+	});
+}
 
 /*
  * Refresh the time in the textbox to 8 hrs from current time
@@ -123,6 +139,14 @@ var interval = setInterval(function() {
 	if (!device)
 		return;
 
+	// Report next alarm time according to core
+	device.getVariable('next_alarm', function(err, data){
+		if (err) return alert(err);
+	
+		console.log("next_alarm ", data);
+		document.getElementById("next_alarm").innerHTML = data.result;
+	});
+	
 	device.getVariable('time', function(err,data) {
 		if (err) return alert(err);
 
@@ -131,11 +155,9 @@ var interval = setInterval(function() {
 		console.log(data);
 		document.getElementById("time").innerHTML = data.result;
 	});	
+
 	device.getVariable('epoch_time', function(err,data) {
 		if (err) return alert(err);
-
-		// the element labeled "time", make the html inside that tag set
-		// contain the result of querying the time variable.
 		document.getElementById("epoch").innerHTML = data.result;
 		var epoch_time = new Date(data.result*1000); // Date wants millisec
 		

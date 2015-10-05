@@ -7,7 +7,7 @@ body {
 #display-table {
 	/* center it */
 	position: fixed;
-	top: 40%;
+	top: 35%;
 	left: 50%;
 	transform: translate(-50%, -50%);	
 }
@@ -15,7 +15,7 @@ body {
 #interaction-table {
 	/* center it */
 	position: fixed;
-	top: 60%;
+	top: 55%;
 	left: 50%;
 	transform: translate(-50%, -50%);	
 }
@@ -46,6 +46,7 @@ button.interaction-button {
 	height: 35px;
 	border-radius: 10px;
 	border: 1px solid #cc9900;
+	outline: none; /* remove blue outline when clicked */
 }
 button.interaction-button:hover {
 	background: #aaaaaa;
@@ -59,6 +60,7 @@ button.interaction-button:hover {
 	height: 24px;
 	border-radius: 10px;
 	border: 1px solid #cc9900;
+	outline: none; /* remove blue outline when clicked */
 }
 #cancel-button:hover {
 	background: #dd8888;
@@ -79,7 +81,7 @@ button.interaction-button:hover {
 	border-radius: 10px;
 	/* put it at the bottom */
 	position: fixed;
-	top: 80%;
+	top: 88%;
 }
 
 #controls {

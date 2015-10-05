@@ -1,4 +1,104 @@
-#controls {
-	background: #dddddd;
+body {
+	font-family: 'Syncopate', Verdana, san-serif;
+	color: #eeeeee;
+	background: #555555;
 }
 
+#display-table {
+	/* center it */
+	position: fixed;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%, -50%);	
+}
+
+#interaction-table {
+	/* center it */
+	position: fixed;
+	top: 60%;
+	left: 50%;
+	transform: translate(-50%, -50%);	
+}
+
+#next-alarm-cell {
+	color: #000000;
+	background: #cc9900;
+	border-radius: 10px;
+	height: 25px;
+	width: 200px;
+}
+
+#clock {
+	color: #ffffff;
+	font-size: 80px;
+	text-shadow: 4px 4px 6px #444444;
+}
+
+#today {
+	font-size: 30px;
+}
+
+button.interaction-button {
+	color: #ffffff;
+	font-family: 'Syncopate', Verdana, san-serif;
+	font-size: 16px;
+	background: #555555;
+	height: 35px;
+	border-radius: 10px;
+	border: 1px solid #cc9900;
+}
+button.interaction-button:hover {
+	background: #aaaaaa;
+}
+
+#cancel-button {
+	color: #ffffff;
+	font-family: 'Syncopate', Verdana, san-serif;
+	font-size: 18px;
+	background: #555555;
+	height: 24px;
+	border-radius: 10px;
+	border: 1px solid #cc9900;
+}
+#cancel-button:hover {
+	background: #dd8888;
+}
+
+#timebox {
+	border: 3px solid #5689aa;
+	border-radius: 10px;
+	height: 22px;
+	width: 100px;
+	background: #555555;
+	font-size: 20px;
+	color: #99ddff;
+}
+
+#controls-frame {
+	background: #dddddd;
+	border-radius: 10px;
+}
+
+#debugging-frame {
+	background: #dddddd;
+	border-radius: 10px;
+	/* put it at the bottom */
+	position: fixed;
+	top: 80%;
+}
+
+#controls {
+	font-family: Courier, monospace;
+	color: #777777;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: 5px;
+}
+
+#debugging {
+	font-family: Courier, monospace;
+	color: #777777;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: 0px;
+}

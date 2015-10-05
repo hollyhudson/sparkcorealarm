@@ -152,7 +152,7 @@ var interval = setInterval(function() {
 	
 		console.log("next_alarm ", data);
 		if (data.result == 0){
-			document.getElementById("next_alarm").innerHTML = "alarm not set";	
+			document.getElementById("next_alarm").innerHTML = "not set";	
 		} else {
 			document.getElementById("next_alarm").innerHTML = new Date(data.result*1000);
 		}
@@ -240,7 +240,7 @@ var interval = setInterval(function() {
 		document.getElementById("day").innerHTML = day; 
 		document.getElementById("month").innerHTML = month; 
 		document.getElementById("date").innerHTML = epoch_time.getDate();
-		document.getElementById("year").innerHTML = epoch_time.getFullYear();
+		//document.getElementById("year").innerHTML = epoch_time.getFullYear();
 		document.getElementById("hours").innerHTML = ("0" + epoch_time.getHours()).slice(-2); // add leading 0
 		document.getElementById("minutes").innerHTML = ("0" + epoch_time.getMinutes()).slice(-2); // add leading 0
 		document.getElementById("clock_time").innerHTML = epoch_time.getTime();

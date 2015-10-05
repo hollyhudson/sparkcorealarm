@@ -6,6 +6,8 @@
 -->
 <html>
 <head>
+	<!-- Syncopate font -->
+	<link href='https://fonts.googleapis.com/css?family=Syncopate' rel='stylesheet' type='text/css'>
 	<title>Sunrise Alarm Clock</title>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/sparkjs/0.5.9/spark.min.js"> </script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
@@ -13,41 +15,76 @@
 	<link rel="stylesheet" type="text/css" href="interface.css"/>
 </head>
 
+<!-- <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script> -->
 
 <body>
 
-<!-- This div will hold the login widget -->
-<div id="spark-login"></div>
+	<!-- This div will hold the login widget -->
+	<div id="spark-login"></div>
 
-<div id="controls" style="display:none;">
+	<!-- This div contains the device selector -->
+	<div id="controls-frame">
+		<div id="controls" style="display:none;">
+			<form>
+			Devices:
+			<div id="devices"></div>
+			</form>
+		</div>
+	</div>
+
+	<!-- This section contains the clock interface -->
+	<script type="text/javascript" src="interface.js"></script>
+	
+	<div "id="display-div">
+	<table id="display-table">
+		<tr>
+		<td align="center">
+			<div id="clock">
+				<span id="hours"></span>:<span id="minutes"></span>
+			</div>
+		</td>
+		</tr>
+		<tr>
+		<td align="center">
+			<div id="today">
+				<span id="day"></span> <span id="date"></span> <span id="month">
+			</div>
+		</td>
+		</tr>
+	</table>
+	</div>
+	
+	<table id="interaction-table">
+		<tr>
+		<td align="center" id="next-alarm-cell">
+			alarm: <span id="next_alarm"></span>
+		</td>
+		</tr>
 	<form>
-	Devices:
-	<div id="devices"></div>
+		<tr>
+		<td align="center">
+			<button class="interaction-button" type="button" onclick="set_alarm()">set</button>
+			<input type="time" name="time_to_set_alarm" id="timebox" value="22:40">
+			<button class="interaction-button" type="button" onclick="refresh_textbox()">refresh</button>
+		</td>
+		</tr>
+		<tr>
+		<td align="center">
+			<button id="cancel-button" type="button" onclick="cancel_alarm()">cancel alarm</button>
+		</td>
+		</tr>
 	</form>
-
-</div>
-
-<script type="text/javascript" src="interface.js"></script>
-
-<div id="day"></div>
-<span id="date"></span> <span id="month"></span> <span id="year"></span>
-<div>
-	<span id="hours"></span>:<span id="minutes"></span>
-</div>
-
-<form>
-	Wake up at: <input type="time" name="time_to_set_alarm" id="timebox" value="22:40">
-	<button type="button" onclick="set_alarm()">SET!</button>
-	<button type="button" onclick="refresh_textbox()">refresh</button>
-	<button type="button" onclick="cancel_alarm()">cancel alarm</button>
-</form>
-	The alarm will go off at: <span id="next_alarm"></span>
-
-<p>Debugging:</p>
-<div id="time"></div>
-<div id="epoch"></div>
-<div id="clock_time"></div>
-
+	</table>
+	
+	<!-- This section contains debugging output -->
+	<div id="debugging">
+	<div id="debugging-frame">
+		<p>Debugging:</p>
+		<div id="time"></div>
+		<div id="epoch"></div>
+		<div id="clock_time"></div>
+	</div>
+	</div>
 
 </body>
 </html>

@@ -79,7 +79,6 @@ function set_alarm()
 		if (err) return alert(err);
 
 		// get current date to create full alarm set time
-		document.getElementById("epoch").innerHTML = data.result;
 		var current_time = new Date(data.result*1000); // Date wants millisec
 
 		console.log("time_to_set " + time_to_set);
@@ -158,18 +157,8 @@ var interval = setInterval(function() {
 		}
 	});
 	
-	device.getVariable('time', function(err,data) {
-		if (err) return alert(err);
-
-		// the element labeled "time", make the html inside that tag set
-		// contain the result of querying the time variable.
-		console.log(data);
-		document.getElementById("time").innerHTML = data.result;
-	});	
-
 	device.getVariable('epoch_time', function(err,data) {
 		if (err) return alert(err);
-		document.getElementById("epoch").innerHTML = data.result;
 		var epoch_time = new Date(data.result*1000); // Date wants millisec
 		
 		var day = "unknown";
@@ -243,8 +232,7 @@ var interval = setInterval(function() {
 		//document.getElementById("year").innerHTML = epoch_time.getFullYear();
 		document.getElementById("hours").innerHTML = ("0" + epoch_time.getHours()).slice(-2); // add leading 0
 		document.getElementById("minutes").innerHTML = ("0" + epoch_time.getMinutes()).slice(-2); // add leading 0
-		document.getElementById("clock_time").innerHTML = epoch_time.getTime();
-	
+
 	});	
 }, 1000);
 

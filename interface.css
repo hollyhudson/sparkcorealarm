@@ -75,12 +75,7 @@ button.interaction-button:hover {
 }
 
 #controls-frame {
-	background: #dddddd;
-	border-radius: 10px;
-}
-
-#debugging-frame {
-	background: #dddddd;
+	background: #333333;
 	border-radius: 10px;
 	/* put it at the bottom */
 	position: fixed;
@@ -89,16 +84,9 @@ button.interaction-button:hover {
 
 #controls {
 	font-family: Courier, monospace;
-	color: #777777;
+	color: #aaaaaa;
 	margin-top: 5px;
 	margin-bottom: 5px;
 	margin-left: 5px;
 }
 
-#debugging {
-	font-family: Courier, monospace;
-	color: #777777;
-	margin-top: 5px;
-	margin-bottom: 5px;
-	margin-left: 0px;
-}

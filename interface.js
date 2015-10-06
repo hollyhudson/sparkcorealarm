@@ -80,16 +80,23 @@ function set_alarm()
 
 		// get current date to create full alarm set time
 		var current_time = new Date(data.result*1000); // Date wants millisec
+		var current_year = current_time.getFullYear();
+		var current_month = current_time.getMonth();
+		var current_date = current_time.getDate();
+		var current_hour = current_time.getHours();
+		var current_min = current_time.getMinutes();
+		var hour_to_set = parseInt(time_to_set[0]);
+		var min_to_set = parseInt(time_to_set[1]);
 
-		console.log("time_to_set " + time_to_set);
-		console.log("current_time(year) " + current_time.getFullYear());
+		// construct a complete wake up time with it, assuming current day:
+		var next_alarm = new Date(current_year, current_month, current_date, hour_to_set, min_to_set, 0, 0);
 
 		// if it's before midnight (current time > alarm set time)
 		// make the alarm go off the next day
-		if (current_time.getHours() > time_to_set[0]) {
-			var next_alarm = new Date(current_time.getFullYear(), current_time.getMonth(), (current_time.getDate() + 1), time_to_set[0], time_to_set[1], 0, 0);
-		} else {
-			var next_alarm = new Date(current_time.getFullYear(), current_time.getMonth(), current_time.getDate(), time_to_set[0], time_to_set[1], 0, 0);
+		if (current_hour > hour_to_set) {
+			// this does not handle all cases.. for instance daylight savings
+			// setting the alarm +23 hrs in the future, etc.
+			next_alarm = new Date(next_alarm.getTime() + (24*60*60*1000));
 		}
 
 		next_alarm = next_alarm.getTime()/1000; //convert to epoch time

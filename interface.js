@@ -6,6 +6,9 @@ var device;
 
 // time the user wants the alarm set for, string from html, array [hrs,min]
 var time_to_set; 
+var eight_hrs_default_text; // default text for textbox used to set alarm
+var start_rampup; // time to start the ramp up sequence
+var ramping_up;  // holds the state of whether or not we're in the rampup seq
 
 /*
  * Log us in and get a list of devices (spark cores).
@@ -134,7 +137,7 @@ function cancel_alarm()
  */
 function refresh_textbox()
 {
-	document.getElementById("timebox").value = "22:40";
+	document.getElementById("timebox").value = eight_hrs_default_text;
 }
 
 /* The setInterval() method calls a function or evaluates an expression
@@ -165,6 +168,11 @@ var interval = setInterval(function() {
 	});
 	
 	device.getVariable('epoch_time', function(err,data) {
+		// Prepare and display default textbox value of 8 hrs from now.
+		var millis_eight_fromnow = (data.result + (60*60*8)) * 1000;
+		var eight_hrs_from_now = new Date(millis_eight_fromnow);
+		eight_hrs_default_text = add_leading_zero(eight_hrs_from_now.getHours()) + ":" + add_leading_zero(eight_hrs_from_now.getMinutes());
+		// Display current date and time:
 		if (err) return alert(err);
 		var epoch_time = new Date(data.result*1000); // Date wants millisec
 		
@@ -237,11 +245,13 @@ var interval = setInterval(function() {
 		document.getElementById("month").innerHTML = month; 
 		document.getElementById("date").innerHTML = epoch_time.getDate();
 		//document.getElementById("year").innerHTML = epoch_time.getFullYear();
-		document.getElementById("hours").innerHTML = ("0" + epoch_time.getHours()).slice(-2); // add leading 0
-		document.getElementById("minutes").innerHTML = ("0" + epoch_time.getMinutes()).slice(-2); // add leading 0
+		document.getElementById("hours").innerHTML = add_leading_zero(epoch_time.getHours());
+		document.getElementById("minutes").innerHTML = add_leading_zero(epoch_time.getMinutes());
 
 	});	
 }, 1000);
 
-
+function add_leading_zero(two_digit_num) {
+	return ("0" + two_digit_num).slice(-2);
+}
 

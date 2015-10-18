@@ -38,6 +38,11 @@ body {
 	font-size: 30px;
 }
 
+/* todo:  play with padding to make the buttons look more uniform */
+button{
+	padding: 3px;
+}
+
 button.interaction-button {
 	color: #ffffff;
 	font-family: 'Syncopate', Verdana, san-serif;

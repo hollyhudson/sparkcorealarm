@@ -18,6 +18,7 @@ static char time_str[32];
 static char placeholder_variable[32];
 static int current_epoch_time;
 static int alarm_time = 0;
+static int begin_sequence = 0;
 static boolean alarm_is_set = false;
 static const int LED_1 = D0;
 static const int LED_2 = D1;
@@ -27,7 +28,13 @@ static const int LED_2 = D1;
 int set_alarm( String incoming_time ) 
 {
 	Serial.print("in set_alarm");
+	// format for alarm_time is 11:45 => 1446396300
 	alarm_time = incoming_time.toInt();		
+	begin_sequence = alarm_time - 60; // 60 sec before alarm_time
+	Serial.print("alarm_time: ");
+	Serial.println(alarm_time);
+	Serial.print("begin_sequence: ");
+	Serial.println(begin_sequence);
 	alarm_is_set = true;
 	return 1;
 }
@@ -55,7 +62,7 @@ void setup()
 
 void loop()
 {
-	static uint32_t last_sync; // static = don't initialize each time the function is called
+	static uint32_t last_sync; // static = holds value btwn fx calls
 	static uint32_t last_update;
 	// millis() returns the number of milliseconds since the program started.
 	// the value overflows (resets to zero) after 50 days.

@@ -13,6 +13,19 @@
  * https://docs.particle.io/reference/firmware/photon/#time
  */
 
+#include "neopixel.h"
+
+// A0 is pin 10 on the spark core
+#define PIXEL_PIN 		A0
+#define PIXEL_COUNT 	16
+#define PIXEL_TYPE 		WS2812B
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(
+	PIXEL_COUNT,
+	PIXEL_PIN,
+	PIXEL_TYPE
+);
+
 static const int LED = D7; // the onboard blue LED
 static char time_str[32];
 static char placeholder_variable[32];
@@ -23,7 +36,43 @@ static boolean alarm_is_set = false;
 static const int LED_1 = D0;
 static const int LED_2 = D1;
 
+// These values will ramp up the LEDs at the correct rate,
+// to look linear to human eyes.
+static const int lookup[] = { 1, 1, 2, 3, 4, 5, 6, 8, 9, 10, 12,
+	14, 16, 18 , 20, 22, 25, 28, 30, 33, 36, 39, 42, 46, 49,
+	52, 56, 60, 64, 68, 72, 76, 81, 86,90, 95, 100, 105, 110,
+	116, 121, 126, 132, 138, 144, 150, 156, 162,169, 176, 182,
+	189, 196, 203, 210, 218, 225, 232, 240, 248, 255};
+
 #define ONE_DAY_MILLIS (24*60*60*1000)
+
+/******** implement later ***********
+// Turn the lamp on
+void turn_lamp_on(void)
+{
+	DDRC |= 2;
+	PORTC |= 2;
+	lamp_state = 1;
+}
+
+
+static void ramp_up(void)
+{
+	
+}
+************************************/
+
+// All lights full on
+void brightest_lights(void)
+{
+	for(int i = 0; i < PIXEL_COUNT; i++)
+	{
+		strip.setPixelColor(i, 255, 255, 255);
+	}
+	strip.show();
+	
+	//turn_lamp_on();	
+}
 
 int set_alarm( String incoming_time ) 
 {
@@ -49,6 +98,9 @@ int cancel_alarm(String placeholder_variable)
 
 void setup()
 {
+	// initialize LED strip
+	strip.begin();
+
 	pinMode(LED, OUTPUT);
 	Particle.variable("time", time_str, STRING);
 	Particle.variable("epoch_time", &current_epoch_time, INT);
@@ -62,6 +114,8 @@ void setup()
 
 void loop()
 {
+	brightest_lights();	
+
 	static uint32_t last_sync; // static = holds value btwn fx calls
 	static uint32_t last_update;
 	// millis() returns the number of milliseconds since the program started.

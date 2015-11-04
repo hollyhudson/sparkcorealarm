@@ -20,6 +20,8 @@
 #define PIXEL_COUNT 	16
 #define PIXEL_TYPE 		WS2812B
 
+#define ONE_DAY_MILLIS (24*60*60*1000)
+
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(
 	PIXEL_COUNT,
 	PIXEL_PIN,
@@ -36,6 +38,9 @@ static boolean alarm_is_set = false;
 static const int LED_1 = D0;
 static const int LED_2 = D1;
 
+int times_through = 0;
+int intensity = 0;
+
 // These values will ramp up the LEDs at the correct rate,
 // to look linear to human eyes.
 static const int lookup[] = { 1, 1, 2, 3, 4, 5, 6, 8, 9, 10, 12,
@@ -43,8 +48,6 @@ static const int lookup[] = { 1, 1, 2, 3, 4, 5, 6, 8, 9, 10, 12,
 	52, 56, 60, 64, 68, 72, 76, 81, 86,90, 95, 100, 105, 110,
 	116, 121, 126, 132, 138, 144, 150, 156, 162,169, 176, 182,
 	189, 196, 203, 210, 218, 225, 232, 240, 248, 255};
-
-#define ONE_DAY_MILLIS (24*60*60*1000)
 
 /******** implement later ***********
 // Turn the lamp on
@@ -55,10 +58,47 @@ void turn_lamp_on(void)
 	lamp_state = 1;
 }
 
+void set_begin_seq( int min, int hour )
+{
+	
+}
 
 static void ramp_up(void)
 {
+	// every 100 times through
+	if( times_through++ % 100 != 0 )	
+	{
+		return;
+	}
 	
+	// at 90 end the sequence
+	if( intensity == 90 )
+	{
+		brightest_lights();
+		// turn_lamp_on();	
+		LED_seq_running = 0;
+		// reset intensity to be ready for tomorrow's ramp_up
+		intensity = 0;
+		return;
+	}
+	
+	for( int i = 0; i < PIXEL_COUNT; i++ )
+	{
+		if( intensity < 30 )
+		{
+			strip.setPixelColor(i,0,0,lookup[intensity]);
+		}
+		else if( intensity < 61 )
+		{
+			strip.setPixelColor(i,lookup[intensity - 30],lookup[intensity - 30],lookup[intensity]);
+		}
+		else if( intensity < 90 )
+		{
+			strip.setPixelColor(i,lookup[intensity - 30],lookup[intensity - 30],255);
+		}
+	}
+	strip.show();
+	intensity++;
 }
 ************************************/
 
@@ -72,6 +112,16 @@ void brightest_lights(void)
 	strip.show();
 	
 	//turn_lamp_on();	
+}
+
+// Turn off LED strip
+void all_off(void)
+{
+	for( int i = 0; i < PIXEL_COUNT; i++ )
+	{
+		strip.setPixelColor(i, 0 , 0, 0);
+	}
+	strip.show();
 }
 
 int set_alarm( String incoming_time ) 
@@ -93,6 +143,7 @@ int cancel_alarm(String placeholder_variable)
 	alarm_time = 0;
 	digitalWrite(LED_1, 0);			
 	alarm_is_set = false;
+	all_off();
 	return 1;
 }
 
@@ -114,7 +165,6 @@ void setup()
 
 void loop()
 {
-	brightest_lights();	
 
 	static uint32_t last_sync; // static = holds value btwn fx calls
 	static uint32_t last_update;
@@ -151,6 +201,7 @@ void loop()
 	{
 		Serial.print("suceeded test if we are past alarm time");
 		digitalWrite(LED_1, 1);			
+		brightest_lights();	
 		alarm_is_set = false;	
 	}
 }

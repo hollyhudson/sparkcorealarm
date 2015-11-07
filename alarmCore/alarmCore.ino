@@ -69,7 +69,6 @@ void set_begin_seq( int min, int hour )
 ************************************/
 static void ramp_up(void)
 {
-	Serial.println("In ramp_up()");
 	// every 100 times through is about 2 min
 	// every 1000 times through is 10 min
 	// every 2000 times through is 18 min
@@ -137,7 +136,7 @@ int set_alarm( String incoming_time )
 	Serial.print("in set_alarm()");
 	// format for alarm_time is 11:45 => 1446396300
 	alarm_time = incoming_time.toInt();		
-	begin_sequence = alarm_time - 60; // 60 sec before alarm_time
+	begin_sequence = alarm_time - (60 * 19); // 19 min before alarm_time
 	Serial.print("alarm_time: ");
 	Serial.println(alarm_time);
 	Serial.print("begin_sequence: ");
@@ -148,7 +147,6 @@ int set_alarm( String incoming_time )
 
 int cancel_alarm(String placeholder_variable)
 {
-	Serial.print("in cancel_alarm()");
 	alarm_time = 0;
 	digitalWrite(LED_1, 0);			
 	alarm_is_set = false;
@@ -180,7 +178,6 @@ void loop()
 		ramp_up();
 	} else {
 
-		Serial.println("Not ramping");
 		static uint32_t last_sync; // static = holds value btwn fx calls
 		static uint32_t last_update;
 		// millis() returns the num of millisec since the program started.
@@ -207,9 +204,10 @@ void loop()
 		}
 	
 		// check to see if the alarm should go off
-		if (current_epoch_time > alarm_time && alarm_is_set) 
+		//if (current_epoch_time > alarm_time && alarm_is_set) 
+		if (current_epoch_time > begin_sequence && alarm_is_set) 
 		{
-			Serial.print("Alarm going off!");
+			Serial.println("Running alarm sequence");
 			digitalWrite(LED_1, 1);			
 			//brightest_lights();	
 			ramp_up();

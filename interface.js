@@ -11,6 +11,49 @@ var start_rampup; // time to start the ramp up sequence
 var ramping_up;  // holds the state of whether or not we're in the rampup seq
 
 /*
+ * As soon as the page loads, call the sparkLogin() function
+ * to populate the "spark-login" div with the login box.
+ * Once a successful login has occured, the login box will be 
+ * hidden and the controls made visible.  An attempt to get the list of 
+ * devices will then be made.
+ */
+var cookies = document.cookie;
+var access_token = cookies.replace(/(?:(?:^|.*;\s*)sparkcore_token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+
+if (access_token)
+{
+	spark.login({accessToken: access_token}).then(successful_login, logout);
+} else {
+	sparkLogin(successful_login);
+}
+
+function successful_login(data)
+{
+	// hide the login button and show the controls
+	document.getElementById("spark-login").style.display = "none";
+	document.getElementById("controls").style.display = "inline-block";
+	console.log(data);
+
+	// store the access token in a cookie so that we don't have to
+	// require a login every time. Only set the cookie if we are passed
+	// a token as an argument.
+	if (data.access_token)
+			document.cookie = "sparkcore_token=" + data.access_token;
+
+	// get the user's list of devices
+	spark.listDevices().then(handle_devices, alert);
+}
+
+/*
+ * Delete the access token cookie and should force a refresh
+ */
+function logout()
+{
+	document.cookie = "sparkcore_token=; max-age=0"
+	location.reload();
+}
+
+/*
  * Log us in and get a list of devices (spark cores).
  *
  * As soon as the page loads, call the sparkLogin() function
@@ -21,7 +64,6 @@ var ramping_up;  // holds the state of whether or not we're in the rampup seq
  *
  * login_success is called when a successful login happens, passing in data
  * captured on login.
- */
 function login_success(data) {
 	// hide the login button and show the controls
 	document.getElementById("spark-login").style.display = "none";
@@ -32,6 +74,7 @@ function login_success(data) {
 };
 
 sparkLogin(login_success);
+ */
 
 /*
  * handle_devices is called once the login has completed and
@@ -65,9 +108,6 @@ function handle_devices(devices_arg)
 		div.appendChild(lab);
 	}
 
-	/* SETUP before going into interval loop */
-	
- 	 
 }
 
 /*
@@ -159,7 +199,7 @@ var interval = setInterval(function() {
 	device.getVariable('next_alarm', function(err, data){
 		if (err) return alert(err);
 	
-		console.log("next_alarm ", data);
+		//console.log("next_alarm ", data);
 		if (data.result == 0){
 			document.getElementById("next_alarm").innerHTML = "not set";	
 		} else {

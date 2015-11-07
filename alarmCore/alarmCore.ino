@@ -1,5 +1,6 @@
-/** \file
- * Keep track of the time on a Spark Core, and report the time on a webpage.
+/* 
+ * Sunrise Alarm Clock controller for a spark core (particle)
+ * Written by Holly F. Hudson
  */
 
 /* To expose a variable (so that it can be accessed with GET and POST
@@ -18,7 +19,7 @@
 // A0 is pin 10 on the spark core
 #define PIXEL_PIN 		A0
 #define PIXEL_COUNT 	16
-#define PIXEL_TYPE 		WS2812B
+#define PIXEL_TYPE 		WS2811
 
 #define ONE_DAY_MILLIS (24*60*60*1000)
 
@@ -35,8 +36,10 @@ static int current_epoch_time;
 static int alarm_time = 0;
 static int begin_sequence = 0;
 static boolean alarm_is_set = false;
+static boolean ramping_up_now = false;
 static const int LED_1 = D0;
 static const int LED_2 = D1;
+
 
 int times_through = 0;
 int intensity = 0;
@@ -63,11 +66,16 @@ void set_begin_seq( int min, int hour )
 	
 }
 
+************************************/
 static void ramp_up(void)
 {
-	// every 100 times through
-	if( times_through++ % 100 != 0 )	
+	Serial.println("In ramp_up()");
+	// every 100 times through is about 2 min
+	// every 1000 times through is 10 min
+	// every 2000 times through is 18 min
+	if( times_through++ % 2000 != 0 )	
 	{
+		ramping_up_now = true;
 		return;
 	}
 	
@@ -76,12 +84,13 @@ static void ramp_up(void)
 	{
 		brightest_lights();
 		// turn_lamp_on();	
-		LED_seq_running = 0;
+		ramping_up_now = false;
 		// reset intensity to be ready for tomorrow's ramp_up
 		intensity = 0;
 		return;
 	}
 	
+	ramping_up_now = true;
 	for( int i = 0; i < PIXEL_COUNT; i++ )
 	{
 		if( intensity < 30 )
@@ -100,14 +109,13 @@ static void ramp_up(void)
 	strip.show();
 	intensity++;
 }
-************************************/
 
 // All lights full on
 void brightest_lights(void)
 {
 	for(int i = 0; i < PIXEL_COUNT; i++)
 	{
-		strip.setPixelColor(i, 255, 255, 255);
+		strip.setPixelColor(i, 200, 200, 200);
 	}
 	strip.show();
 	
@@ -126,7 +134,7 @@ void all_off(void)
 
 int set_alarm( String incoming_time ) 
 {
-	Serial.print("in set_alarm");
+	Serial.print("in set_alarm()");
 	// format for alarm_time is 11:45 => 1446396300
 	alarm_time = incoming_time.toInt();		
 	begin_sequence = alarm_time - 60; // 60 sec before alarm_time
@@ -140,9 +148,11 @@ int set_alarm( String incoming_time )
 
 int cancel_alarm(String placeholder_variable)
 {
+	Serial.print("in cancel_alarm()");
 	alarm_time = 0;
 	digitalWrite(LED_1, 0);			
 	alarm_is_set = false;
+	ramping_up_now = false;
 	all_off();
 	return 1;
 }
@@ -165,44 +175,46 @@ void setup()
 
 void loop()
 {
-
-	static uint32_t last_sync; // static = holds value btwn fx calls
-	static uint32_t last_update;
-	// millis() returns the number of milliseconds since the program started.
-	// the value overflows (resets to zero) after 50 days.
-	const uint32_t now_millis = millis();
-
-	// If you haven't synced (the time) in a day, do it now.
-	if (now_millis - last_sync > ONE_DAY_MILLIS)
+	if(ramping_up_now)
 	{
-		Particle.syncTime();
-		last_sync = millis();
-		return;
-	}
+		ramp_up();
+	} else {
+
+		Serial.println("Not ramping");
+		static uint32_t last_sync; // static = holds value btwn fx calls
+		static uint32_t last_update;
+		// millis() returns the num of millisec since the program started.
+		// the value overflows (resets to zero) after 50 days.
+		const uint32_t now_millis = millis();
 	
-	// Once per second update the time string and publish the
-	// current data.
-	if (now_millis - last_update > 1000)
-	{
-		last_update = now_millis;
+		// If you haven't synced (the time) in a day, do it now.
+		if (now_millis - last_sync > ONE_DAY_MILLIS)
+		{
+			Particle.syncTime();
+			last_sync = millis();
+			return;
+		}
 		
-		// the exposed variable "time" should now contain the current time:
-		//strncpy(time_str, "Hello", sizeof(time_str));
-		strncpy(time_str, Time.timeStr(), sizeof(time_str));
-		current_epoch_time = Time.now();
-		//int difference = alarm_time - current_epoch_time;
-		//Serial.print("difference: ");
-		//Serial.print(difference);
-		//Serial.print("\r\n");
-	}
-
-	// check to see if the alarm should go off
-	if (current_epoch_time > alarm_time && alarm_is_set) 
-	{
-		Serial.print("suceeded test if we are past alarm time");
-		digitalWrite(LED_1, 1);			
-		brightest_lights();	
-		alarm_is_set = false;	
-	}
+		// Once per second update the time string and publish the
+		// current data.
+		if (now_millis - last_update > 1000)
+		{
+			last_update = now_millis;
+			
+			// the exposed variable "time" should now contain the current time:
+			strncpy(time_str, Time.timeStr(), sizeof(time_str));
+			current_epoch_time = Time.now();
+		}
+	
+		// check to see if the alarm should go off
+		if (current_epoch_time > alarm_time && alarm_is_set) 
+		{
+			Serial.print("Alarm going off!");
+			digitalWrite(LED_1, 1);			
+			//brightest_lights();	
+			ramp_up();
+			alarm_is_set = false;	
+		}
+	} // end of seq to do when NOT ramping_up_now
 }
 	
